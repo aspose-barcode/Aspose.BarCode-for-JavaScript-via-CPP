@@ -1,0 +1,1 @@
+# Aspose.BarCode-for-JavaScript-via-CPP
