@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <title>Swiss QR Recognition</title>
+
+  <script type="text/javascript" src="../../lib/Aspose.BarCode.JS.Cpp.js" defer onload="initializeModule()"></script>
+  <script>
+    // Global BarCode module instance
+    var BarCodeInstance;
+
+    // Async function for module initialization
+    async function initializeModule() {
+        try {
+            BarCodeInstance = await BarCode();
+            console.log('BarCode module has loaded');
+
+            // Enable barcode-related controls here
+            const form = document.getElementById("swiss-qr-recognition-form");
+            Array.from(form.elements).forEach(element => {
+                element.disabled = false;
+            });
+        } catch (error) {
+            console.error("BarCode module initialization error:", error);
+        }
+    }
+
+    // Function to handle file input
+    function handleFileInput(event) {
+        event.preventDefault();
+        const file = event.dataTransfer ? event.dataTransfer.files[0] : event.target.files[0];
+        if (file) {
+            readFile(file);
+        }
+    }
+
+    function SaveBlob(fileBlob, fileName)
+    {
+          try {
+              if (fileBlob !== undefined)
+              {
+                  const uint8_view = new Uint8Array(fileBlob);
+                  BarCodeInstance.FS.writeFile(fileName, uint8_view, { flags: 'w+' });
+              }
+
+          }
+          catch (e) {
+              console.error("Error saving blob:", e.message);
+          }
+    }
+    // Function to read the file and recognize the barcode
+    async function readFile(file) {
+        try {
+            const fileReader = new FileReader();
+            fileReader.onload = async function (e) {
+                SaveBlob(e.target.result, file.name);
+                
+                // Decode the barcode
+                var  reader = new BarCodeInstance.BarCodeReader(file.name, "QR");
+                reader.ReadBarCodes();
+                
+                displayResults(reader);
+                reader.delete();
+            };
+            fileReader.readAsArrayBuffer(file);
+        } catch (error) {
+            console.error("Error reading or decoding file:", error);
+        }
+    }
+
+    // Display recognition results
+    function displayResults(reader) {
+        const resultContainer = document.getElementById("results");
+        if (reader && reader.FoundCount > 0) {
+        
+            let decoded = [];
+            for(var i = 0; i < reader.FoundCount; i++)
+            {
+              var result = reader.FoundBarCodes(i);
+              let ct = 'SPC\n0200\n1\nCH4431999123000889012\nS\nMuster & Söhne\nMusterstrasse\n12b\n8200\nZürich\nCH\n\n\n\n\n\n\n\n1000.25\nCHF\nS\nMuster AG\nMusterstrasse\n1\n3030\nBern\nCH\nQRR\n210000000003139471430009017\n\nEPD';
+              var swissResult = BarCodeInstance.ComplexCodetextReader.TryDecodeSwissQR(ct);
+              if (swissResult.IsEmpty) return;
+              
+              decoded.push("Recognized:");
+              decoded.push(`Account: ${swissResult.Bill.Account}`);
+              decoded.push(`Amount: ${swissResult.Bill.Amount}`);
+              decoded.push(`Currency: ${swissResult.Bill.Currency}`);
+              decoded.push(`Reference: ${swissResult.Bill.Reference}`);
+              decoded.push(`Creditor: ${swissResult.Bill.Creditor.Name}`);
+              decoded.push(`Creditor Street: ${swissResult.Bill.Creditor.Street}`);
+              decoded.push(`Creditor HouseNo: ${swissResult.Bill.Creditor.HouseNo}`);
+              decoded.push(`Creditor PostalCode: ${swissResult.Bill.Creditor.PostalCode}`);
+              decoded.push(`Creditor Town: ${swissResult.Bill.Creditor.Town}`);
+              decoded.push(`Creditor CountryCode: ${swissResult.Bill.Creditor.CountryCode}`);
+              decoded.push(`Debtor: ${swissResult.Bill.Debtor.Name}`);
+              decoded.push(`Debtor Street: ${swissResult.Bill.Debtor.Street}`);
+              decoded.push(`Debtor HouseNo: ${swissResult.Bill.Debtor.HouseNo}`);
+              decoded.push(`Debtor PostalCode: ${swissResult.Bill.Debtor.PostalCode}`);
+              decoded.push(`Debtor Town: ${swissResult.Bill.Debtor.Town}`);
+              decoded.push(`Debtor CountryCode: ${swissResult.Bill.Debtor.CountryCode}`);
+              decoded.push("");
+              swissResult.delete();
+
+            } 
+            resultContainer.textContent = `${decoded.join("\r\n")}`;
+        } else {
+            resultContainer.textContent = "No barcode detected.";
+        }
+    }
+  </script>
+
+  <style>
+    #drop-area {
+        border: 2px dashed #ccc;
+        padding: 20px;
+        text-align: center;
+        color: #aaa;
+        cursor: pointer;
+        margin-bottom: 20px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <h1>Swiss QR Recognition</h1>
+  <form id="swiss-qr-recognition-form">    
+    <div id="drop-area" onclick="document.getElementById('file-input').click()" ondrop="handleFileInput(event)" ondragover="event.preventDefault()" ondragenter="event.preventDefault()">
+      Drag and drop a file here, or click to select
+      <input type="file" id="file-input" onchange="handleFileInput(event)" style="display: none;">
+    </div>
+  </form>
+  
+  <h2>Results:</h2>
+  <pre id="results">No file uploaded yet.</pre>
+</body>
+
+</html>

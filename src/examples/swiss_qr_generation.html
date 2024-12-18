@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <title>Swiss QR Bill Generator</title>
+  
+  <script type="text/javascript" src="../../lib/Aspose.BarCode.JS.Cpp.js" defer onload="initializeModule()"></script>
+  <script>
+    var BarCodeInstance;
+
+    async function initializeModule() {
+        try {
+            BarCodeInstance = await BarCode();
+            console.log('BarCode module has loaded');
+
+            // Enable the form
+            const form = document.getElementById("qr-form");
+            Array.from(form.elements).forEach(element => {
+                element.disabled = false;
+            });
+        } catch (error) {
+            console.error("BarCode module initialization error:", error);
+        }
+    }
+
+    function generateSwissQRBill(event) {
+        // Prevent form submission
+        event.preventDefault();
+
+        try {
+            // Collect input data from form
+            const account = document.getElementById("account").value;
+            const amount = document.getElementById("amount").value;
+            const currency = document.getElementById("currency").value;
+            const reference = document.getElementById("reference").value;
+
+            const creditorName = document.getElementById("creditor-name").value;
+            const creditorStreet = document.getElementById("creditor-street").value;
+            const creditorHouseNo = document.getElementById("creditor-house-no").value;
+            const creditorPostalCode = document.getElementById("creditor-postal-code").value;
+            const creditorTown = document.getElementById("creditor-town").value;
+            const creditorCountryCode = document.getElementById("creditor-country-code").value;
+
+            const debtorName = document.getElementById("debtor-name").value;
+            const debtorStreet = document.getElementById("debtor-street").value;
+            const debtorHouseNo = document.getElementById("debtor-house-no").value;
+            const debtorPostalCode = document.getElementById("debtor-postal-code").value;
+            const debtorTown = document.getElementById("debtor-town").value;
+            const debtorCountryCode = document.getElementById("debtor-country-code").value;
+
+            // Create Swiss QR Code text object
+            var swissQRCode = new BarCodeInstance.SwissQRCodetext();
+            swissQRCode.Bill.Version = BarCodeInstance.QrBillStandardVersion.V2_0;
+            swissQRCode.Bill.Account = account;
+            swissQRCode.Bill.Amount = amount;
+            swissQRCode.Bill.Currency = currency;
+            swissQRCode.Bill.Reference = reference;
+
+            swissQRCode.Bill.Creditor.Name = creditorName;
+            swissQRCode.Bill.Creditor.Street = creditorStreet;
+            swissQRCode.Bill.Creditor.HouseNo = creditorHouseNo;
+            swissQRCode.Bill.Creditor.PostalCode = creditorPostalCode;
+            swissQRCode.Bill.Creditor.Town = creditorTown;
+            swissQRCode.Bill.Creditor.CountryCode = creditorCountryCode;
+
+            swissQRCode.Bill.Debtor.Name = debtorName;
+            swissQRCode.Bill.Debtor.Street = debtorStreet;
+            swissQRCode.Bill.Debtor.HouseNo = debtorHouseNo;
+            swissQRCode.Bill.Debtor.PostalCode = debtorPostalCode;
+            swissQRCode.Bill.Debtor.Town = debtorTown;
+            swissQRCode.Bill.Debtor.CountryCode = debtorCountryCode;
+
+            // Generate QR Code
+            var generator = swissQRCode.GetGenerator();
+            generator.Parameters.Barcode.XDimension = "4px";
+            generator.Parameters.Barcode.QR.QrEncodeMode = BarCodeInstance.QREncodeMode.ECIEncoding;
+            generator.Parameters.Barcode.QR.QrECIEncoding = BarCodeInstance.ECIEncodings.UTF8;
+
+            // Display the generated QR code
+            document.getElementById("qr-image").src = generator.GenerateBarCodeImage();
+            console.log("Swiss QR Bill generated successfully");
+
+            // Clean up
+            swissQRCode.delete();
+            generator.delete();
+        } catch (error) {
+            console.error("Error generating Swiss QR Bill:", error);
+        }
+    }
+  </script>
+</head>
+
+<body>
+  <h1>Swiss QR Bill Generator</h1>
+  <form id="qr-form" onsubmit="generateSwissQRBill(event)">
+    <h2>Payment Information</h2>
+    <label for="account">Account:</label><br/>
+    <input type="text" id="account" value="CH4431999123000889012" disabled><br/>
+
+    <label for="amount">Amount:</label><br/>
+    <input type="text" id="amount" value="1000.25" disabled><br/>
+
+    <label for="currency">Currency:</label><br/>
+    <select id="currency" disabled>
+      <option value="CHF" selected>CHF</option>
+      <option value="EUR">EUR</option>
+    </select><br/>
+
+    <label for="reference">Reference:</label><br/>
+    <input type="text" id="reference" value="210000000003139471430009017" disabled><br/>
+
+    <h2>Creditor Information</h2>
+    <label for="creditor-name">Name:</label><br/>
+    <input type="text" id="creditor-name" value="Muster & Söhne" disabled><br/>
+
+    <label for="creditor-street">Street:</label><br/>
+    <input type="text" id="creditor-street" value="Musterstrasse" disabled><br/>
+
+    <label for="creditor-house-no">House No:</label><br/>
+    <input type="text" id="creditor-house-no" value="12b" disabled><br/>
+
+    <label for="creditor-postal-code">Postal Code:</label><br/>
+    <input type="text" id="creditor-postal-code" value="8200" disabled><br/>
+
+    <label for="creditor-town">Town:</label><br/>
+    <input type="text" id="creditor-town" value="Zürich" disabled><br/>
+
+    <label for="creditor-country-code">Country Code:</label><br/>
+    <input type="text" id="creditor-country-code" value="CH" disabled><br/>
+
+    <h2>Debtor Information</h2>
+    <label for="debtor-name">Name:</label><br/>
+    <input type="text" id="debtor-name" value="Muster AG" disabled><br/>
+
+    <label for="debtor-street">Street:</label><br/>
+    <input type="text" id="debtor-street" value="Musterstrasse" disabled><br/>
+
+    <label for="debtor-house-no">House No:</label><br/>
+    <input type="text" id="debtor-house-no" value="1" disabled><br/>
+
+    <label for="debtor-postal-code">Postal Code:</label><br/>
+    <input type="text" id="debtor-postal-code" value="3030" disabled><br/>
+
+    <label for="debtor-town">Town:</label><br/>
+    <input type="text" id="debtor-town" value="Bern" disabled><br/>
+
+    <label for="debtor-country-code">Country Code:</label><br/>
+    <input type="text" id="debtor-country-code" value="CH" disabled><br/>
+
+    <br/>
+    <button type="submit" disabled>Generate Swiss QR Bill</button>
+  </form>
+  
+  <br/>
+  <img id="qr-image"/>
+</body>
+
+</html>

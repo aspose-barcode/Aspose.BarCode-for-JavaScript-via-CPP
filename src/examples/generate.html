@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <title>Aspose.BarCode for JavaScript via C++</title>
+  
+  <script type="text/javascript" src="../../lib/Aspose.BarCode.JS.Cpp.js" defer onload="initializeModule()"></script>
+  <script>
+    // Global BarCode module instance
+    var BarCodeInstance;
+
+    // Async function for module initialization
+    async function initializeModule() {
+        try {
+            BarCodeInstance = await BarCode();
+            console.log('BarCode module has loaded');
+            
+            // Enable barcode-related controls here
+            const form = document.getElementById("example-form");
+            Array.from(form.elements).forEach(element => {
+                element.disabled = false;
+            });
+        } catch (error) {
+            console.error("BarCode module initialization error:", error);
+        }
+    }
+    function convert(inputString) {
+      // Check if the input is not empty or only whitespace
+      if (typeof inputString === "string" && inputString.trim() !== "") {
+        // Attempt to convert the string to a number
+        const number = parseFloat(inputString);
+
+        // Check if the conversion was successful
+        if (!isNaN(number)) {
+          return number; // Return the valid number
+        } else {
+          console.error("Input is not a valid number");
+          return null; // Indicate invalid number
+        }
+      } else {
+        console.error("Input is an empty or invalid string");
+        return null; // Indicate invalid string
+      }
+    }
+
+    // Function to generate barcode
+    function generate(event) {
+        // Prevent form submission (page reload)
+        event.preventDefault();
+
+        try {
+            const codetext = document.getElementById("codetext").value;
+            const encoding = document.getElementById("encoding").value;
+            const backcolor = document.getElementById("backcolor").value;
+            const imagewidth = document.getElementById("imagewidth").value;
+            const imageheight = document.getElementById("imageheight").value;
+            const xdimension = document.getElementById("xdimension").value;
+            const autosizemode = document.getElementById("autosizemode").value;
+            const rotationangle = convert(document.getElementById("rotationangle").value);
+           
+
+            // Generate barcode
+            const generator = new BarCodeInstance.BarcodeGenerator(encoding, codetext);
+            generator.Parameters.BackColor = backcolor;
+            generator.Parameters.ImageWidth = imagewidth;
+            generator.Parameters.ImageHeight = imageheight;
+            generator.Parameters.Barcode.XDimension = xdimension;
+            generator.Parameters.AutoSizeMode = BarCodeInstance.AutoSizeMode[autosizemode];
+            generator.Parameters.RotationAngle = rotationangle;
+            
+            const base64Image = generator.GenerateBarCodeImage();
+
+            // Display the generated barcode
+            const imgElement = document.getElementById("generated");
+            imgElement.src = base64Image;
+            generator.delete();
+            console.log("Barcode generated successfully");
+        } catch (error) {
+            console.error("Error generating barcode:", error);
+        }
+    }
+  </script>
+</head>
+
+<body>
+  <h1>Barcode Generator</h1>
+  <form id="example-form" onsubmit="generate(event)">
+    <label for="codetext">Codetext:</label><br/>
+    <input type="text" id="codetext" name="codetext" value="Aspose.BarCode" disabled><br/>
+
+    <label for="encoding">Encoding:</label><br/>
+    <select id="encoding" name="encoding" disabled>
+      <option value="QR">QR</option>
+      <option value="DataMatrix">DataMatrix</option>
+      <option value="Aztec">Aztec</option>
+    </select>
+    <br/>
+    
+    <label for="codetext">Back color:</label><br/>
+    <input type="text" id="backcolor" name="backcolor" value="White" disabled><br/>
+    
+    <label for="codetext">Image width:</label><br/>
+    <input type="text" id="imagewidth" name="imagewidth" value="100px" disabled><br/>
+  
+    <label for="codetext">Image height:</label><br/>
+    <input type="text" id="imageheight" name="imageheight" value="100px" disabled><br/>
+    
+    <label for="codetext">XDimension:</label><br/>
+    <input type="text" id="xdimension" name="xdimension" value="0.6mm" disabled><br/>
+   
+    <label for="encoding">AutoSizeMode:</label><br/>
+    <select id="autosizemode" name="autosizemode" disabled>
+      <option value="None">None</option>
+      <option value="Nearest">Nearest</option>
+      <option value="Interpolation">Interpolation</option>
+    </select>
+    <br/>
+    
+    <label for="codetext">Rotation angle in degrees:</label><br/>
+    <input type="text" id="rotationangle" name="rotationangle" value="0" disabled><br/>
+    <br/>
+    
+    <button type="submit" disabled>Generate Barcode</button><br/>
+  </form>
+  
+  <br/>
+  
+  <br/>
+  <img id="generated"/>
+</body>
+
+</html>

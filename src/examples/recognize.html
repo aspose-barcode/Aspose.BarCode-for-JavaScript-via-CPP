@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <title>Barcode Recognition</title>
+
+  <script type="text/javascript" src="../../lib/Aspose.BarCode.JS.Cpp.js" defer onload="initializeModule()"></script>
+  <script>
+    // Global BarCode module instance
+    var BarCodeInstance;
+
+    // Async function for module initialization
+    async function initializeModule() {
+        try {
+            BarCodeInstance = await BarCode();
+            console.log('BarCode module has loaded');
+
+            // Enable barcode-related controls here
+            const form = document.getElementById("recognition-form");
+            Array.from(form.elements).forEach(element => {
+                element.disabled = false;
+            });
+        } catch (error) {
+            console.error("BarCode module initialization error:", error);
+        }
+    }
+
+    // Function to handle file input
+    function handleFileInput(event) {
+        event.preventDefault();
+        const file = event.dataTransfer ? event.dataTransfer.files[0] : event.target.files[0];
+        if (file) {
+            readFile(file);
+        }
+    }
+
+    function SaveBlob(fileBlob, fileName)
+    {
+          try {
+              if (fileBlob !== undefined)
+              {
+                  const uint8_view = new Uint8Array(fileBlob);
+                  BarCodeInstance.FS.writeFile(fileName, uint8_view, { flags: 'w+' });
+              }
+
+          }
+          catch (e) {
+              console.error("Error saving blob:", e.message);
+          }
+    }
+    // Function to read the file and recognize the barcode
+    async function readFile(file) {
+        try {
+            const fileReader = new FileReader();
+            fileReader.onload = async function (e) {
+                SaveBlob(e.target.result, file.name);
+                const encoding = document.getElementById("type").value;
+                // Decode the barcode
+                var  reader = new BarCodeInstance.BarCodeReader(file.name, encoding);
+                reader.ReadBarCodes();
+                
+                displayResults(reader);
+                reader.delete();
+            };
+            fileReader.readAsArrayBuffer(file);
+        } catch (error) {
+            console.error("Error reading or decoding file:", error);
+        }
+    }
+
+    // Display recognition results
+    function displayResults(reader) {
+        const resultContainer = document.getElementById("results");
+        if (reader && reader.FoundCount > 0) {
+        
+            let decoded = [];
+            for(var i = 0; i < reader.FoundCount; i++)
+              decoded.push(reader.FoundBarCodes(i).CodeText);
+              
+            resultContainer.textContent = `Recognized: ${decoded.join(", ")}`;
+        } else {
+            resultContainer.textContent = "No barcode detected.";
+        }
+    }
+  </script>
+
+  <style>
+    #drop-area {
+        border: 2px dashed #ccc;
+        padding: 20px;
+        text-align: center;
+        color: #aaa;
+        cursor: pointer;
+        margin-bottom: 20px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <h1>Barcode Recognition</h1>
+  <form id="recognition-form">
+    <label for="type">Type:</label><br/>
+    <select id="type" name="type" disabled>
+      <option value="QR">QR</option>
+      <option value="DataMatrix">DataMatrix</option>
+      <option value="Aztec">Aztec</option>
+    </select>
+    <br/>
+    <br/>
+    
+    <div id="drop-area" onclick="document.getElementById('file-input').click()" ondrop="handleFileInput(event)" ondragover="event.preventDefault()" ondragenter="event.preventDefault()">
+      Drag and drop a file here, or click to select
+      <input type="file" id="file-input" onchange="handleFileInput(event)" style="display: none;">
+    </div>
+  </form>
+  
+  <h2>Results:</h2>
+  <div id="results">No file uploaded yet.</div>
+</body>
+
+</html>
