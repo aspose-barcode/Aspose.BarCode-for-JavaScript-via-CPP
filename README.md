@@ -56,7 +56,8 @@ Supported formats: JPEG, TIFF, PNG, BMP, GIF, SVG.
 
 1. Download the [Aspose.BarCode for JavaScript via C++](https://releases.aspose.com/barcode/javascript-cpp/) library
 2. Unpack it into [src/lib](https://github.com/aspose-barcode/Aspose.BarCode-for-JavaScript-via-CPP/tree/master/src/lib/) directory
-3. Launch an server.bat or server.sh in [src](https://github.com/aspose-barcode/Aspose.BarCode-for-JavaScript-via-CPP/tree/master/src/)
-4. Go to [examples page](http://localhost:8000/) into your browser
+3. Obtain a [license](https://purchase.aspose.com/buy) and put it into [lic](https://github.com/aspose-barcode/Aspose.BarCode-for-JavaScript-via-CPP/tree/master/lic/) directory
+4. Launch an server.bat or server.sh in [src](https://github.com/aspose-barcode/Aspose.BarCode-for-JavaScript-via-CPP/tree/master/src/)
+5. Go to [examples page](http://localhost:8000/) into your browser
 
 [Product Page](https://products.aspose.com/barcode/javascript-cpp/) | [Docs](https://docs.aspose.com/barcode/javascript-cpp/) | [Demos](https://products.aspose.app/barcode/family) | [API Reference](https://docs.aspose.com/barcode/javascript-cpp/api-reference/) | [Examples](https://github.com/aspose-barcode/Aspose.BarCode-for-JavaScript-via-CPP/tree/master/src/examples) | [Blog](https://blog.aspose.com/category/barcode/) | [Free Support](https://forum.aspose.com/c/barcode/13) | [Temporary License](https://purchase.aspose.com/temporary-license)

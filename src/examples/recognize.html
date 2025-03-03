@@ -16,7 +16,7 @@
         try {
             BarCodeInstance = await BarCode();
             console.log('BarCode module has loaded');
-
+            AsposeBarCodeLoadSettings(BarCodeInstance, "/settings.json");
             // Enable barcode-related controls here
             const form = document.getElementById("recognition-form");
             Array.from(form.elements).forEach(element => {

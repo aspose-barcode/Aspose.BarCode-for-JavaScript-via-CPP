@@ -14,7 +14,7 @@
         try {
             BarCodeInstance = await BarCode();
             console.log('BarCode module has loaded');
-
+            AsposeBarCodeLoadSettings(BarCodeInstance, "/settings.json");
             // Enable the form
             const form = document.getElementById("qr-form");
             Array.from(form.elements).forEach(element => {
